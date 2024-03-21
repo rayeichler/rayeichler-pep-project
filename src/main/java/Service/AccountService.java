@@ -1,7 +1,11 @@
 package Service;
 
 import Model.Account;
+import Util.ConnectionUtil;
 import DAO.AccountDAO;
+
+import java.util.*;
+import java.sql.*;
 
 public class AccountService {
     public AccountDAO accountDAO;
@@ -12,6 +16,10 @@ public class AccountService {
 
     public AccountService(AccountDAO accountDAO){
         this.accountDAO = accountDAO;
+    }
+
+    public List<Account> getAllAccounts(){
+        return accountDAO.getAllAccounts();
     }
 
     public Account userRegistration(Account account){
