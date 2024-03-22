@@ -1,12 +1,12 @@
 package Service;
 
-import Model.Message;
 import DAO.MessageDAO;
+import Model.Message;
 
 import java.util.*;
 
 public class MessageService {
-    public MessageDAO messageDAO;
+    MessageDAO messageDAO;
 
     public MessageService(){
         messageDAO = new MessageDAO();
