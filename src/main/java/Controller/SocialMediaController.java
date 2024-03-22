@@ -22,6 +22,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class SocialMediaController {
     //My Code
     MessageService messageService;
+    AccountService accountService;
+
+    public SocialMediaController(){
+        messageService = new MessageService();
+        accountService = new AccountService();
+    }
+
     //End My Code
     /**
      * In order for the test cases to work, you will need to write the endpoints in the startAPI() method, as the test
@@ -30,18 +37,26 @@ public class SocialMediaController {
      */
     public Javalin startAPI() {
         Javalin app = Javalin.create();
-        //app.get("example-endpoint", this::exampleHandler);
+
         //Start My Code
         //My Endpoints
+        app.get("/", ctx -> ctx.result("Welcome to Ray's Social Media App"));
+        app.post("/register", this::postNewUserHandler);
         app.get("/messages", this::getAllMessagesHandler);
-        
+
         //End My Code
         return app;
     }
 
+    private void postNewUserHandler(Context ctx) throws JsonProcessingException{
+        ObjectMapper mapper = new ObjectMapper();
+        Account account = mapper.readValue(ctx.body(), Account.class);
+        Account addedAccount = accountService.addUser(account);
+    }
+
     private void getAllMessagesHandler(Context ctx){
         List<Message> messages = messageService.getAllMessages();
-        ctx.json(messages);
+        ctx.json(messages, Message.class);
     }
 
     /**
