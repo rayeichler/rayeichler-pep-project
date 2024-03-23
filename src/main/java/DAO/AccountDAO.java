@@ -8,43 +8,45 @@ import java.util.*;
 
 public class AccountDAO {
     public Account addAccount(Account account){
-        //List<String> existingUsernames = new ArrayList<String>();
-        //existingUsernames = getAllUsernames();
         String newusername = account.getUsername();
         String password = account.getPassword();
 
-        System.out.println("Accountdao addaccount");
-        if(newusername.length()>0 && password.length()>3 && checkAccountAvailability(newusername)){// && !existingUsernames.contains(newusername) && password.length()>3){
-            System.out.println("Adding Account");
-            insertAccount(account);
-            return account;
-        }else{
-            return null;
+        if(newusername.length()>0 && password.length()>3 && checkAccountAvailability(newusername)){
+            Connection connection = ConnectionUtil.getConnection();
+            try{
+                String sql = "INSERT INTO Account(username, password) VALUES (?,?)";
+                PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+                preparedStatement.setString(1, newusername);
+                preparedStatement.setString(2, password);
+
+                preparedStatement.executeUpdate();
+                ResultSet pkResultSet = preparedStatement.getGeneratedKeys();
+                if(pkResultSet.next()){
+                    int generatedID = (int) pkResultSet.getLong(1);
+                    return new Account(generatedID, newusername, password);
+                }
+            }catch(SQLException e){
+                System.out.println(e.getMessage());
+            }
         }
-
-
-//        if(newusername != null) !existingUsernames.contains(newusername) && password.length()>3){
-  //          insertAccount(account);
-    //        return account;
-      //  }else{
-        //    return null;
-       // }
+        return null;
     }
 
-    public boolean checkAccountAvailability(String username){
+    private boolean checkAccountAvailability(String username){
         List<String> existingUsernames = getAllUsernames();
-        boolean doesExist = true;
+        boolean isAvailable = true;
 
         for(String user: existingUsernames){
             if(username.equalsIgnoreCase(user)){
-                doesExist = false;
+                isAvailable = false;
             }
         }
-        return doesExist;
-    }
 
+        return isAvailable;
+    }
+/* 
     public void insertAccount(Account account){
-        System.out.println("insertAccount");
         Connection connection = ConnectionUtil.getConnection();
 
         try{
@@ -60,14 +62,13 @@ public class AccountDAO {
             System.out.println(e.getMessage());
         }
     }
-
-    public List<String> getAllUsernames(){
+*/
+    private List<String> getAllUsernames(){
         Connection connection = ConnectionUtil.getConnection();
         List<String> usernames = new ArrayList<String>();
 
         try{
             String sql = "SELECT * FROM account";
-            //PreparedStatement preparedStatement = connection.prepareStatement(sql);
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(sql);
 

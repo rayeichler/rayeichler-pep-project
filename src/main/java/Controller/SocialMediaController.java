@@ -52,11 +52,17 @@ public class SocialMediaController {
         ObjectMapper mapper = new ObjectMapper();
         Account account = mapper.readValue(ctx.body(), Account.class);
         Account addedAccount = accountService.addUser(account);
-        if(addedAccount == null){
-            ctx.status(400);
+        if(addedAccount != null){
+            ctx.json(mapper.writeValueAsString(addedAccount));
         }else{
-            ctx.status(200);
+            ctx.status(400);
         }
+
+//        if(addedAccount == null){
+  //          ctx.status(400);
+    //    }else{
+      //      ctx.json(mapper.writeValueAsString(addedAccount));
+        //}
     }
 
     private void getAllMessagesHandler(Context ctx){

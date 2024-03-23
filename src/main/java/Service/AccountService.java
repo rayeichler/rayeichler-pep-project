@@ -17,7 +17,6 @@ public class AccountService {
     }
 
     public Account addUser(Account account){
-        System.out.println("Accountservice adduser");
         return accountDAO.addAccount(account);
     }
 }

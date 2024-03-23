@@ -16,9 +16,12 @@ public class Main {
         Javalin app = controller.startAPI();
         app.start(8080);
 
-        Account newuser = new Account("testuser2", "password");
-        AccountService accountService = new AccountService();
-        Account addedUser = accountService.addUser(newuser);
-        System.out.println(addedUser.getUsername());
+        AccountDAO accountDAO = new AccountDAO();
+        Account newAccount = new Account("testuser1", "feiodw");
+        accountDAO.addAccount(newAccount);
+        System.out.println("Should fail");
+        Account newAccount2 = new Account("Efewjofif", "ijfowiejf");
+        accountDAO.addAccount(newAccount2);
+        System.out.println("Should work.");
     }
 }
