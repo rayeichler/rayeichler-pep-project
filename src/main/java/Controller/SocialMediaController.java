@@ -40,12 +40,37 @@ public class SocialMediaController {
 
         //Start My Code
         //My Endpoints
-        app.get("/", ctx -> ctx.result("Welcome to Ray's Social Media App"));
+        //app.get("/", ctx -> ctx.result("Welcome to Ray's Social Media App"));
         app.post("/register", this::postNewUserHandler);
         app.get("/messages", this::getAllMessagesHandler);
+        app.post("/messages", this::postMessageHandler);
+        app.post("/login", this::postLoginHandler);
 
         //End My Code
         return app;
+    }
+
+    private void postMessageHandler(Context ctx) throws JsonProcessingException{
+        ObjectMapper mapper = new ObjectMapper();
+        Message message = mapper.readValue(ctx.body(), Message.class);
+        Message postedMessage = messageService.addMessage(message);
+        if(postedMessage != null){
+            ctx.json(mapper.writeValueAsString(postedMessage));
+        }else{
+            ctx.status(400);
+        }
+    }
+
+    private void postLoginHandler(Context ctx) throws JsonProcessingException{
+        ObjectMapper mapper = new ObjectMapper();
+        Account account = mapper.readValue(ctx.body(), Account.class);
+        Account authorizedAccount = accountService.verifyAccount(account);
+        if(authorizedAccount != null){
+            ctx.json(mapper.writeValueAsString(authorizedAccount));
+        }
+        else{
+            ctx.status(401);
+        }
     }
 
     private void postNewUserHandler(Context ctx) throws JsonProcessingException{
@@ -57,12 +82,6 @@ public class SocialMediaController {
         }else{
             ctx.status(400);
         }
-
-//        if(addedAccount == null){
-  //          ctx.status(400);
-    //    }else{
-      //      ctx.json(mapper.writeValueAsString(addedAccount));
-        //}
     }
 
     private void getAllMessagesHandler(Context ctx){

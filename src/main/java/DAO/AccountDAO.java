@@ -33,6 +33,32 @@ public class AccountDAO {
         return null;
     }
 
+    public Account verifyAccount(Account account){
+        List<String> existingUsernames = getAllUsernames();
+        String username = account.getUsername();
+        if(existingUsernames.contains(username)){
+            Connection connection = ConnectionUtil.getConnection();
+
+            try{
+                String sql = "SELECT * FROM Account WHERE username = ?";
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setString(1, username);
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                while(resultSet.next()){
+                    int accountId = resultSet.getInt("account_id");
+                    String existingPassword = resultSet.getString("password");
+                    if(account.getPassword().equals(existingPassword)){
+                        return new Account(accountId, username, existingPassword);
+                    }
+                }
+            }catch(SQLException e){
+                System.out.println(e.getMessage());
+            }
+        }
+        return null;
+    }
+
     private boolean checkAccountAvailability(String username){
         List<String> existingUsernames = getAllUsernames();
         boolean isAvailable = true;
@@ -45,24 +71,7 @@ public class AccountDAO {
 
         return isAvailable;
     }
-/* 
-    public void insertAccount(Account account){
-        Connection connection = ConnectionUtil.getConnection();
 
-        try{
-            String sql = "INSERT INTO Account(username, password) VALUES(?,?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-
-            preparedStatement.setString(1, account.getUsername());
-            preparedStatement.setString(2, account.getPassword());
-
-            preparedStatement.executeUpdate();
-
-        }catch(SQLException e){
-            System.out.println(e.getMessage());
-        }
-    }
-*/
     private List<String> getAllUsernames(){
         Connection connection = ConnectionUtil.getConnection();
         List<String> usernames = new ArrayList<String>();

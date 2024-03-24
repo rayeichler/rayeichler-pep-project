@@ -15,13 +15,5 @@ public class Main {
         SocialMediaController controller = new SocialMediaController();
         Javalin app = controller.startAPI();
         app.start(8080);
-
-        AccountDAO accountDAO = new AccountDAO();
-        Account newAccount = new Account("testuser1", "feiodw");
-        accountDAO.addAccount(newAccount);
-        System.out.println("Should fail");
-        Account newAccount2 = new Account("Efewjofif", "ijfowiejf");
-        accountDAO.addAccount(newAccount2);
-        System.out.println("Should work.");
     }
 }

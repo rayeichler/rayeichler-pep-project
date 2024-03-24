@@ -19,4 +19,8 @@ public class AccountService {
     public Account addUser(Account account){
         return accountDAO.addAccount(account);
     }
+
+    public Account verifyAccount(Account account){
+        return accountDAO.verifyAccount(account);
+    }
 }
