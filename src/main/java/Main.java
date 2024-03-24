@@ -3,6 +3,7 @@ import io.javalin.Javalin;
 
 import Model.Account;
 import DAO.AccountDAO;
+import DAO.MessageDAO;
 import Service.AccountService;
 import java.util.*;
 
@@ -15,5 +16,8 @@ public class Main {
         SocialMediaController controller = new SocialMediaController();
         Javalin app = controller.startAPI();
         app.start(8080);
+
+        MessageDAO messageDAO = new MessageDAO();
+        System.out.println(messageDAO.getMessageById(323943));
     }
 }

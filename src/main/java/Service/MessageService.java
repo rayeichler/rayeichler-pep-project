@@ -20,6 +20,14 @@ public class MessageService {
       return messageDAO.getAllMessages();
     }
 
+    public Message getMessageById(int messageID){
+        return messageDAO.getMessageById(messageID);
+    }
+
+    public Message deleteMessageById(int messageID){
+        return messageDAO.deleteMessageById(messageID);
+    }
+
     public Message addMessage(Message message){
         return messageDAO.addMessage(message);
     }

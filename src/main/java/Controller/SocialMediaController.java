@@ -40,14 +40,26 @@ public class SocialMediaController {
 
         //Start My Code
         //My Endpoints
-        //app.get("/", ctx -> ctx.result("Welcome to Ray's Social Media App"));
         app.post("/register", this::postNewUserHandler);
+        app.post("/login", this::postLoginHandler);
+
         app.get("/messages", this::getAllMessagesHandler);
         app.post("/messages", this::postMessageHandler);
-        app.post("/login", this::postLoginHandler);
+        app.get("/messages/{message_id}", this::getMessageByIdHandler);
+        app.delete("/messages/{message_id}", this::deleteMessageByIdHandler);
+        //PATCH localhost:8080/messages/{message_id}
+        //GET localhost:8080/accounts/{account_id}/messages
 
         //End My Code
         return app;
+    }
+
+    private void getMessageByIdHandler(Context ctx) throws JsonProcessingException{
+        int messageID = Integer.parseInt(Objects.requireNonNull(ctx.pathParam("message_id")));
+        Message message = messageService.getMessageById(messageID);
+        if(message != null){
+            ctx.json(message, Message.class);
+        }
     }
 
     private void postMessageHandler(Context ctx) throws JsonProcessingException{
@@ -58,6 +70,14 @@ public class SocialMediaController {
             ctx.json(mapper.writeValueAsString(postedMessage));
         }else{
             ctx.status(400);
+        }
+    }
+
+    private void deleteMessageByIdHandler(Context ctx) throws JsonProcessingException{
+        int messageID = Integer.parseInt(Objects.requireNonNull(ctx.pathParam("message_id")));
+        Message message = messageService.deleteMessageById(messageID);
+        if(message != null){
+            ctx.json(message, Message.class);
         }
     }
 
