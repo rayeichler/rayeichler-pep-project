@@ -32,7 +32,6 @@ public class MessageDAO {
     public Message getMessageById(int messageID){
         Connection connection = ConnectionUtil.getConnection();
         try{
-            System.out.println("Message by ID");
             String sql = "SELECT * FROM Message WHERE message_id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             
@@ -40,7 +39,6 @@ public class MessageDAO {
 
             ResultSet resultSet = preparedStatement.executeQuery();
             if(resultSet.next()){
-                System.out.println("Message Found");
                 return new Message(resultSet.getInt("message_id"), 
                     resultSet.getInt("posted_by"),
                     resultSet.getString("message_text"),
@@ -48,6 +46,28 @@ public class MessageDAO {
             }
         }catch(SQLException e){
             System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    public Message updateMessage(int messageID, String messageText){
+        if(messageText.length() > 0 && messageText.length() < 256){
+            Connection connection = ConnectionUtil.getConnection();
+            Message message = getMessageById(messageID);
+            if(message != null){
+                try{
+                    String sql = "UPDATE Message SET message_text = ? WHERE message_id = ?";
+                    PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+                    preparedStatement.setString(1, messageText);
+                    preparedStatement.setInt(2, messageID);
+
+                    preparedStatement.executeUpdate();
+                    return(new Message(messageID, message.getPosted_by(), messageText, message.getTime_posted_epoch()));
+                }catch(SQLException e){
+                    System.out.println(e.getMessage());
+                }
+            }
         }
         return null;
     }
