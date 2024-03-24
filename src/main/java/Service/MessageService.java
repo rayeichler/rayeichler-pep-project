@@ -5,6 +5,10 @@ import Model.Message;
 
 import java.util.*;
 
+/*
+MessageService is the intermediate layer (business logic) between the Javalin controller and the data access object.
+There is currently no business logic for this API, hence it is simply a passthrough layer to the DAO.
+*/
 public class MessageService {
     MessageDAO messageDAO;
 
@@ -20,8 +24,16 @@ public class MessageService {
       return messageDAO.getAllMessages();
     }
 
+    public List<Message> getAllMessagesByUser(int accountID){
+        return messageDAO.getAllMessagesByUser(accountID);
+    }
+
     public Message getMessageById(int messageID){
         return messageDAO.getMessageById(messageID);
+    }
+
+    public Message addMessage(Message message){
+        return messageDAO.addMessage(message);
     }
 
     public Message updateMessage(int messageID, String messageText){
@@ -30,9 +42,5 @@ public class MessageService {
 
     public Message deleteMessageById(int messageID){
         return messageDAO.deleteMessageById(messageID);
-    }
-
-    public Message addMessage(Message message){
-        return messageDAO.addMessage(message);
     }
 }
